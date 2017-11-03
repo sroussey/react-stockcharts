@@ -466,3 +466,11 @@ export function getAxisCanvas(contexts) {
 export function getMouseCanvas(contexts) {
 	return contexts.mouseCoord;
 }
+
+export function getBgCanvas(contexts) {
+	return contexts.bg;
+}
+
+export function getFrontCanvas(contexts) {
+	return contexts.front;
+}

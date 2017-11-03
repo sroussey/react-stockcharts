@@ -16,14 +16,19 @@ class AreaOnlySeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { yAccessor, defined, base } = this.props;
+		const { yAccessor, defined, base, lastX } = this.props;
 		const { fill, stroke, opacity } = this.props;
 
-		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData, xAccessor, height } = moreProps;
 
 		const newBase = functor(base);
 
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		const grd = ctx.createLinearGradient(0, 0, 0, height);
+		grd.addColorStop(0, hexToRGBA(fill, opacity));
+		grd.addColorStop(0.8, hexToRGBA(fill, 0.1));
+		grd.addColorStop(1, "transparent");
+
+		ctx.fillStyle = grd;
 		ctx.strokeStyle = stroke;
 
 		let points0 = [], points1 = [];
@@ -35,6 +40,12 @@ class AreaOnlySeries extends Component {
 
 				points0.push([x, y0]);
 				points1.push([x, y1]);
+
+				if (i === plotData.length - 1 && lastX) {
+					const x = lastX({ xScale, xAccessor, last_tick: d });
+					points0.push([x, y0]);
+					points1.push([x, y1]);
+				}
 			} else if (points0.length) {
 				segment(points0, points1, ctx);
 				points0 = [];
@@ -82,6 +93,7 @@ AreaOnlySeries.propTypes = {
 	base: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.number
 	]),
+	lastX: PropTypes.func,
 };
 
 AreaOnlySeries.defaultProps = {
@@ -90,6 +102,7 @@ AreaOnlySeries.defaultProps = {
 	opacity: 1,
 	defined: d => !isNaN(d),
 	base: (yScale/* , d*/) => first(yScale.range()),
+	lastX: ({ xScale, xAccessor, d }) => xScale(xAccessor(d)),
 };
 
 

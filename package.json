@@ -34,9 +34,9 @@
     "server": "cd build && python3 -m http.server 8090"
   },
   "dependencies": {
-    "d3-array": "^1.2.0",
+    "d3-array": "^1.2.1",
     "d3-collection": "^1.0.4",
-    "d3-force": "^1.0.6",
+    "d3-force": "^1.1.0",
     "d3-format": "^1.2.0",
     "d3-interpolate": "^1.1.5",
     "d3-path": "^1.0.5",
@@ -44,15 +44,15 @@
     "d3-selection": "^1.1.0",
     "d3-shape": "^1.2.0",
     "d3-time": "^1.0.7",
-    "d3-time-format": "^2.0.5",
+    "d3-time-format": "^2.1.0",
     "debug": "^3.0.1",
     "lodash.flattendeep": "^4.4.0",
     "prop-types": "^15.5.10",
     "save-svg-as-png": "^1.2.0"
   },
   "peerDependencies": {
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0"
+    "react": ">=15.0.0",
+    "react-dom": ">=15.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -84,9 +84,9 @@
     "node-sass": "^4.5.3",
     "prismjs": "^1.6.0",
     "progress-bar-webpack-plugin": "^1.10.0",
-    "react": "^15.6.1",
+    "react": "^16.0.0",
     "react-bootstrap": "^0.31.2",
-    "react-dom": "^15.6.1",
+    "react-dom": "^16.0.0",
     "remarkable-loader": "^0.2.1",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",

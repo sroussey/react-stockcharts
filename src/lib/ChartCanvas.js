@@ -358,6 +358,7 @@ class ChartCanvas extends Component {
 		const canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
 			clearCanvas([
+	            canvases.front,
 				canvases.axes,
 				// canvases.hover,
 				canvases.mouseCoord
@@ -368,6 +369,7 @@ class ChartCanvas extends Component {
 		const canvases = this.getCanvasContexts();
 		if (canvases && canvases.mouseCoord) {
 			clearCanvas([
+	            // canvases.front,
 				canvases.mouseCoord,
 				// canvases.hover,
 			], this.props.ratio);
@@ -377,6 +379,7 @@ class ChartCanvas extends Component {
 		const canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
 			clearCanvas([
+	            canvases.front,
 				canvases.axes,
 				// canvases.hover,
 				canvases.mouseCoord,
@@ -616,7 +619,7 @@ class ChartCanvas extends Component {
 			}
 		});
 	}
-	xAxisZoom(newDomain) {
+	xAxisZoom(newDomain, e) {
 		const { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 		this.clearThreeCanvas();
 
@@ -626,6 +629,16 @@ class ChartCanvas extends Component {
 		const start = first(xScale.domain());
 		const end = xAccessor(firstItem);
 		const { onLoadMore } = this.props;
+
+		this.triggerEvent("zoom", {
+			xScale,
+			plotData,
+			chartConfig,
+			// mouseXY,
+			// currentCharts,
+			// currentItem,
+			show: true,
+		}, e);
 
 		this.setState({
 			xScale,

@@ -6,7 +6,7 @@ import LineSeries from "./LineSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
 
 function AreaSeries(props) {
-	const { yAccessor, baseAt } = props;
+	const { yAccessor, baseAt, lastX } = props;
 	const { className, opacity, stroke, strokeWidth, fill } = props;
 
 	return (
@@ -20,7 +20,9 @@ function AreaSeries(props) {
 				yAccessor={yAccessor}
 				base={baseAt}
 				stroke="none" fill={fill}
-				opacity={opacity} />
+				opacity={opacity}
+				lastX={lastX}
+			/>
 		</g>
 	);
 }
@@ -33,6 +35,7 @@ AreaSeries.propTypes = {
 	className: PropTypes.string,
 	yAccessor: PropTypes.func.isRequired,
 	baseAt: PropTypes.func,
+	lastX: PropTypes.func,
 };
 
 AreaSeries.defaultProps = {

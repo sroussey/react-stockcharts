@@ -112,8 +112,10 @@ export function drawOnCanvas(ctx, props) {
 
 	if (edge === null) return;
 
+	const { arrowWidth } = edge.coordinateBase;
+
 	if (isDefined(edge.coordinateBase)) {
-		const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+		const { rectWidth, rectHeight } = edge.coordinateBase;
 
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
@@ -155,7 +157,7 @@ export function drawOnCanvas(ctx, props) {
 
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);
-		ctx.lineTo(edge.line.x2, edge.line.y2);
+		ctx.lineTo(edge.line.x2 - arrowWidth, edge.line.y2);
 		ctx.stroke();
 	}
 }

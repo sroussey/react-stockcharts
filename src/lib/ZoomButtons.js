@@ -61,7 +61,7 @@ class ZoomButtons extends Component {
 		const y = height - heightFromBase;
 
 		const [w, h] = size;
-		const hLength = 5;
+		const hLength = 6;
 		const wLength = 6;
 
 		const textY = Math.round(y + h / 2);
@@ -116,7 +116,7 @@ class ZoomButtons extends Component {
 					strokeOpacity={strokeOpacity}
 					strokeWidth={strokeWidth}
 				/>
-				<g transform={`translate (${resetX}, ${y + h / 4}) scale(.14)`}>
+				<g transform={`translate (${resetX}, ${y + h / 4}) scale(.18)`}>
 					<path d="M31 13C23.4 5.3 12.8.5 1.1.5c-23.3 0-42.3 19-42.3 42.5s18.9 42.5 42.3 42.5c13.8 0 26-6.6 33.7-16.9l-16.5-1.8C13.5 70.4 7.5 72.5 1 72.5c-16.2 0-29.3-13.2-29.3-29.4S-15.2 13.7 1 13.7c8.1 0 15.4 3.3 20.7 8.6l-10.9 11h32.5V.5L31 13z"
 						fill={textFill}
 					/>
