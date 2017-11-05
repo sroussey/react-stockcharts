@@ -15,7 +15,9 @@ import {
 	isDefined,
 	isNotDefined,
 	functor,
-	mapObject
+	mapObject,
+	find,
+	shallowEqual
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
@@ -48,7 +50,7 @@ function values(func) {
 	};
 }
 
-export function getNewChartConfig(innerDimension, children) {
+export function getNewChartConfig(innerDimension, children, existingChartConfig = []) {
 
 	return React.Children.map(children, (each) => {
 		if (each && each.type.toString() === Chart.toString()) {
@@ -69,9 +71,23 @@ export function getNewChartConfig(innerDimension, children) {
 				Array.isArray(yExtentsProp)
 				&& yExtentsProp.length === 2
 			) {
-				const [a, b] = yExtentsProp;
-				if (typeof a == "number" && typeof b == "number") {
-					yScale.domain([a, b]);
+				const prevChartConfig = find(existingChartConfig, d => d.id === id);
+				if (
+					isDefined(prevChartConfig)
+					&& prevChartConfig.yPan
+					&& prevChartConfig.yPanEnabled
+					&& yPan && yPanEnabled
+					&& shallowEqual(prevChartConfig.originalYExtentsProp, yExtentsProp)
+				) {
+					// console.log(prevChartConfig.originalYExtentsProp, yExtentsProp)
+					// console.log(prevChartConfig.yScale.domain())
+					yScale.domain(prevChartConfig.yScale.domain());
+				} else {
+					// console.log("HHHHHHHHHHHHHHHHHHHHHHHHH")
+					const [a, b] = yExtentsProp;
+					if (typeof a == "number" && typeof b == "number") {
+						yScale.domain([a, b]);
+					}
 				}
 			}
 			// console.log(yExtentsProp, yExtents);
@@ -79,10 +95,12 @@ export function getNewChartConfig(innerDimension, children) {
 				id,
 				origin: functor(origin)(availableWidth, availableHeight),
 				padding,
+				originalYExtentsProp: yExtentsProp,
 				yExtents,
 				yExtentsCalculator,
 				flipYScale,
-				yScale: setRange(yScale.copy(), height, padding, flipYScale),
+				// yScale: setRange(yScale.copy(), height, padding, flipYScale),
+				yScale: yScale,
 				yPan,
 				yPanEnabled,
 				// mouseCoordinates,
@@ -104,7 +122,6 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 }
 
 function setRange(scale, height, padding, flipYScale) {
-
 	if (scale.rangeRoundPoints || isNotDefined(scale.invert)) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
 		if (scale.rangeRoundPoints) scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
@@ -115,6 +132,14 @@ function setRange(scale, height, padding, flipYScale) {
 			: { top: padding, bottom: padding };
 
 		scale.range(flipYScale ? [top, height - bottom] : [height - bottom, top]);
+		if (scale.invert) {
+			const trueRange = flipYScale ? [0, height] : [height, 0];
+			const trueDomain = trueRange.map(scale.invert);
+			scale
+				.domain(trueDomain)
+				.range(trueRange);
+		}
+
 	}
 	return scale;
 }
@@ -166,7 +191,8 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 			const domain = yPan && yPanEnabled
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;
-			// console.log(yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
+
+			// console.error(id, yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
 			return {
 				...config,
 				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
@@ -176,6 +202,8 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 		});
 
 	const updatedChartConfig = combine(chartConfig, yDomains);
+	// console.error(yDomains, dy, chartsToPan, updatedChartConfig.map(d => d.yScale.domain()));
+
 	return updatedChartConfig;
 }
 
