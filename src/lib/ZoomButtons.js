@@ -14,7 +14,7 @@ class ZoomButtons extends Component {
 		this.handleZoomIn = this.handleZoomIn.bind(this);
 		this.zoom = this.zoom.bind(this);
 	}
-	zoom(direction) {
+	zoom(direction, e) {
 		const { xAxisZoom, xScale, plotData, xAccessor } = this.context;
 		const cx = xScale(xAccessor(last(plotData)));
 		// mean(xScale.range());
@@ -35,20 +35,20 @@ class ZoomButtons extends Component {
 		});
 
 		this.interval = setInterval(() => {
-			xAxisZoom(foo.shift());
+			xAxisZoom(foo.shift(), e);
 			if (foo.length === 0) {
 				clearInterval(this.interval);
 				delete this.interval;
 			}
 		}, 10);
 	}
-	handleZoomOut() {
+	handleZoomOut(e) {
 		if (this.interval) return;
-		this.zoom(1);
+		this.zoom(1, e);
 	}
-	handleZoomIn() {
+	handleZoomIn(e) {
 		if (this.interval) return;
-		this.zoom(-1);
+		this.zoom(-1, e);
 	}
 	render() {
 		const { chartConfig } = this.context;
