@@ -1042,7 +1042,9 @@ class ChartCanvas extends Component {
 				<CanvasContainer ref={this.saveCanvasContainerNode}
 					type={type}
 					ratio={ratio}
-					width={width} height={height} zIndex={zIndex}/>
+					width={width} height={height} zIndex={zIndex}
+					margin={margin}
+				/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
 					<defs>
