@@ -123,7 +123,7 @@ function calculateFullData(props) {
 	return {
 		xAccessor,
 		displayXAccessor: displayXAccessor || xAccessor,
-		xScale,
+		xScale: xScale.copy(),
 		fullData,
 		filterData
 	};
@@ -243,7 +243,7 @@ function calculateState(props) {
 			const prev = data[i - 1];
 			const curr = data[i];
 			if (inputXAccesor(prev) > inputXAccesor(curr)) {
-				throw new Error("'data' is not sorted on 'xAccessor', send 'data' sorted in assending order of 'xAccessor'");
+				throw new Error("'data' is not sorted on 'xAccessor', send 'data' sorted in ascending order of 'xAccessor'");
 			}
 		}
 	}
@@ -617,7 +617,6 @@ class ChartCanvas extends Component {
 
 		this.clearThreeCanvas();
 
-
 		const firstItem = head(fullData);
 
 		const start = head(xScale.domain());
@@ -722,15 +721,13 @@ class ChartCanvas extends Component {
 		this.clearThreeCanvas();
 		this.draw({ force: true });
 	}
-	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
+	panHelper(mouseXY, initialXScale, { dx, dy }, chartsToPan) {
 		const { xAccessor, displayXAccessor, chartConfig: initialChartConfig } = this.state;
 		const { filterData } = this.state;
 		const { fullData } = this;
 		const { postCalculator } = this.props;
 
-		const dx = mouseXY[0] - panOrigin[0];
-		const dy = mouseXY[1] - panOrigin[1];
-
+		// console.log(dx, dy);
 		if (isNotDefined(initialXScale.invert))
 			throw new Error("xScale provided does not have an invert() method."
 				+ "You are likely using an ordinal scale. This scale does not support zoom, pan");
@@ -772,20 +769,20 @@ class ChartCanvas extends Component {
 			currentItem,
 		};
 	}
-	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
+	handlePan(mousePosition, panStartXScale, dxdy, chartsToPan, e) {
 		if (!this.waitingForPanAnimationFrame) {
 			this.waitingForPanAnimationFrame = true;
 
 			this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
 			this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
 
-			const state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
+			const state = this.panHelper(mousePosition, panStartXScale, dxdy, chartsToPan);
 
 			this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
 			this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
 			this.panInProgress = true;
-			// console.log(panStartXScale.domain(), state.xScale.domain())
+			// console.log(panStartXScale.domain(), state.xScale.domain());
 
 			this.triggerEvent("pan", state, e);
 
@@ -795,12 +792,50 @@ class ChartCanvas extends Component {
 				currentCharts: state.currentCharts,
 			};
 			requestAnimationFrame(() => {
-
 				this.waitingForPanAnimationFrame = false;
 				this.clearBothCanvas();
 				this.draw({ trigger: "pan" });
 			});
 		}
+	}
+	handlePanEnd(mousePosition, panStartXScale, dxdy, chartsToPan, e) {
+		const state = this.panHelper(mousePosition, panStartXScale, dxdy, chartsToPan);
+		// console.log(this.canvasDrawCallbackList.map(d => d.type));
+		this.hackyWayToStopPanBeyondBounds__plotData = null;
+		this.hackyWayToStopPanBeyondBounds__domain = null;
+
+		this.panInProgress = false;
+
+		// console.log("PANEND", panEnd++);
+		const {
+			xScale,
+			plotData,
+			chartConfig,
+		} = state;
+
+		this.triggerEvent("panend", state, e);
+
+		requestAnimationFrame(() => {
+			const { xAccessor } = this.state;
+			const { fullData } = this;
+
+			const firstItem = head(fullData);
+			const start = head(xScale.domain());
+			const end = xAccessor(firstItem);
+			// console.log(start, end, start < end ? "Load more" : "I have it");
+
+			const { onLoadMore } = this.props;
+
+			this.clearThreeCanvas();
+
+			this.setState({
+				xScale,
+				plotData,
+				chartConfig,
+			}, () => {
+				if (start < end) onLoadMore(start, end);
+			});
+		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
 		this.triggerEvent("mousedown", this.mutableState, e);
@@ -889,45 +924,6 @@ class ChartCanvas extends Component {
 	}
 	handleDoubleClick(mousePosition, e) {
 		this.triggerEvent("dblclick", {}, e);
-	}
-	handlePanEnd(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
-		const state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
-		// console.log(this.canvasDrawCallbackList.map(d => d.type));
-		this.hackyWayToStopPanBeyondBounds__plotData = null;
-		this.hackyWayToStopPanBeyondBounds__domain = null;
-
-		this.panInProgress = false;
-
-		// console.log("PANEND", panEnd++);
-		const {
-			xScale,
-			plotData,
-			chartConfig,
-		} = state;
-
-		this.triggerEvent("panend", state, e);
-
-		requestAnimationFrame(() => {
-			const { xAccessor } = this.state;
-			const { fullData } = this;
-
-			const firstItem = head(fullData);
-			const start = head(xScale.domain());
-			const end = xAccessor(firstItem);
-			// console.log(start, end, start < end ? "Load more" : "I have it");
-
-			const { onLoadMore } = this.props;
-
-			this.clearThreeCanvas();
-
-			this.setState({
-				xScale,
-				plotData,
-				chartConfig,
-			}, () => {
-				if (start < end) onLoadMore(start, end);
-			});
-		});
 	}
 	getChildContext() {
 		const dimensions = getDimensions(this.props);
