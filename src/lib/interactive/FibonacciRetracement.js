@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -9,7 +9,7 @@ import {
 	saveNodeType,
 	isHoverForInteractiveType,
 } from "./utils";
-import EachFibRetracement from "./hoc/EachFibRetracement";
+import EachFibRetracement from "./wrapper/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 

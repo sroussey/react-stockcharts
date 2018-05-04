@@ -1,6 +1,6 @@
 {
   "name": "react-stockcharts",
-  "version": "0.7.0-beta.22",
+  "version": "0.7.6",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
@@ -92,6 +92,7 @@
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
     "shelljs": "^0.7.8",
+    "shortid": "^2.2.8",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",

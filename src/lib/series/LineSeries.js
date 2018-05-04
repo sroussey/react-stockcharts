@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -7,7 +7,13 @@ import { line as d3Line } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
-import { isDefined, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
+import {
+	isDefined,
+	getClosestItemIndexes,
+	strokeDashTypes,
+	getStrokeDasharray,
+	hexToRGBA,
+} from "../utils";
 
 class LineSeries extends Component {
 	constructor(props) {
@@ -59,8 +65,15 @@ class LineSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const {
-			yAccessor, stroke, strokeWidth, hoverStrokeWidth,
-			defined, strokeDasharray, interpolation
+			yAccessor,
+			stroke,
+			strokeOpacity,
+			strokeWidth,
+			hoverStrokeWidth,
+			defined,
+			strokeDasharray,
+			interpolation,
+			canvasClip,
 		} = this.props;
 
 		const { connectNulls } = this.props;
@@ -68,14 +81,19 @@ class LineSeries extends Component {
 		const { xAccessor } = moreProps;
 		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
+		if (canvasClip) {
+			ctx.save();
+			canvasClip(ctx, moreProps);
+		}
+
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
 
-		ctx.strokeStyle = stroke;
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
 		const dataSeries = d3Line()
-			.x(d => xScale(xAccessor(d)))
-			.y(d => yScale(yAccessor(d)));
+			.x(d => Math.round(xScale(xAccessor(d))))
+			.y(d => Math.round(yScale(yAccessor(d))));
 
 		if (isDefined(interpolation)) {
 			dataSeries.curve(interpolation);
@@ -87,33 +105,23 @@ class LineSeries extends Component {
 		ctx.beginPath();
 		dataSeries.context(ctx)(plotData);
 		ctx.stroke();
-		/*
-		let points = [];
-		for (let i = 0; i < plotData.length; i++) {
-			const d = plotData[i];
-			if (defined(yAccessor(d), i)) {
-				const [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
 
-				points.push([x, y]);
-			} else if (points.length) {
-				segment(points, ctx);
-				points = connectNulls ? points : [];
-			}
+		if (canvasClip) {
+			ctx.restore();
 		}
-
-		if (points.length) segment(points, ctx);*/
 	}
 	renderSVG(moreProps) {
-		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
+		const { yAccessor, stroke, strokeOpacity, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
 		const { connectNulls } = this.props;
-		const { interpolation } = this.props;
-		const { xAccessor } = moreProps;
+		const { interpolation, style } = this.props;
+		const { xAccessor, chartConfig } = moreProps;
 
-		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
+		const { xScale, plotData, hovering } = moreProps;
 
+		const { yScale } = chartConfig;
 		const dataSeries = d3Line()
-			.x(d => xScale(xAccessor(d)))
-			.y(d => yScale(yAccessor(d)));
+			.x(d => Math.round(xScale(xAccessor(d))))
+			.y(d => Math.round(yScale(yAccessor(d))));
 
 		if (isDefined(interpolation)) {
 			dataSeries.curve(interpolation);
@@ -125,13 +133,18 @@ class LineSeries extends Component {
 
 		const { fill, className } = this.props;
 
-		return <path className={`${className} ${stroke ? "" : " line-stroke"}`}
-			d={d}
-			stroke={stroke}
-			strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
-			strokeDasharray={getStrokeDasharray(strokeDasharray)}
-			fill={fill}
-		/>;
+		return (
+			<path
+				style={style}
+				className={`${className} ${stroke ? "" : " line-stroke"}`}
+				d={d}
+				stroke={stroke}
+				strokeOpacity={strokeOpacity}
+				strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
+				strokeDasharray={getStrokeDasharray(strokeDasharray)}
+				fill={fill}
+			/>
+		);
 	}
 	render() {
 		const { highlightOnHover } = this.props;
@@ -177,6 +190,7 @@ function segment(points, ctx) {
 LineSeries.propTypes = {
 	className: PropTypes.string,
 	strokeWidth: PropTypes.number,
+	strokeOpacity: PropTypes.number,
 	stroke: PropTypes.string,
 	hoverStrokeWidth: PropTypes.number,
 	fill: PropTypes.string,
@@ -190,11 +204,14 @@ LineSeries.propTypes = {
 	yAccessor: PropTypes.func,
 	connectNulls: PropTypes.bool,
 	interpolation: PropTypes.func,
+	canvasClip: PropTypes.func,
+	style: PropTypes.object,
 };
 
 LineSeries.defaultProps = {
 	className: "line ",
 	strokeWidth: 1,
+	strokeOpacity: 1,
 	hoverStrokeWidth: 4,
 	fill: "none",
 	stroke: "#4682B4",

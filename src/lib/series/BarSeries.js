@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -14,7 +14,7 @@ import StackedBarSeries, {
 	identityStack
 } from "./StackedBarSeries";
 
-import { functor } from "../utils";
+import { functor, isDefined } from "../utils";
 
 class BarSeries extends Component {
 	constructor(props) {
@@ -23,7 +23,6 @@ class BarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-
 		if (this.props.swapScales) {
 			const { xAccessor } = moreProps;
 			drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
@@ -46,15 +45,17 @@ class BarSeries extends Component {
 	render() {
 		const { clip } = this.props;
 
-		return <GenericChartComponent
-			clip={clip}
-			svgDraw={this.renderSVG}
+		return (
+			<GenericChartComponent
+				clip={clip}
+				svgDraw={this.renderSVG}
 
-			canvasToDraw={getAxisCanvas}
-			canvasDraw={this.drawOnCanvas}
+				canvasToDraw={getAxisCanvas}
+				canvasDraw={this.drawOnCanvas}
 
-			drawOn={["pan"]}
-		/>;
+				drawOn={["pan"]}
+			/>
+		);
 	}
 }
 
@@ -109,7 +110,6 @@ function getBars(props, moreProps) {
 		xAccessor,
 		plotData
 	});
-
 	/*
 	const barWidth = Math.round(width);
 	const offset = Math.round(barWidth === 1 ? 0 : 0.5 * barWidth);
@@ -117,6 +117,7 @@ function getBars(props, moreProps) {
 	const offset = Math.floor(0.5 * width);
 
 	const bars = plotData
+		.filter(d => isDefined(yAccessor(d)))
 		.map(d => {
 			const yValue = yAccessor(d);
 			let y = yScale(yValue);

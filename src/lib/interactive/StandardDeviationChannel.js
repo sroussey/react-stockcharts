@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -12,7 +12,7 @@ import {
 	isHoverForInteractiveType,
 } from "./utils";
 
-import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
+import EachLinearRegressionChannel from "./wrapper/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 

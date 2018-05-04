@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -15,7 +15,7 @@ class EdgeCoordinatesPage extends React.Component {
 			<ContentSection title={EdgeCoordinatesPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
+						<TypeChooser>
 							{(type) => (<CandleStickChartWithEdge  data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>

@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { timeFormat, timeFormatDefaultLocale } from "d3-time-format";
 // import { map as d3Map } from "d3-collection";
@@ -101,7 +101,16 @@ function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters) 
 			.source(dateAccessor)
 			.misc({ initialIndex, formatters });
 
-		const index = calculate(data);
+		const index = calculate(data).map(each => {
+			const { format } = each;
+			return {
+				// ...each,
+				index: each.index,
+				level: each.level,
+				date: new Date(each.date),
+				format: timeFormat(format),
+			};
+		});
 		/*
 		var map = d3Map();
 		for (var i = 0; i < data.length - 1; i++) {
@@ -165,16 +174,7 @@ export function discontinuousTimeScaleProviderBuilder() {
 		}
 		// console.log(interval, entries[0].key);
 
-		const inputIndex = index.map(each => {
-			const { format } = each;
-			return {
-				// ...each,
-				index: each.index,
-				level: each.level,
-				date: new Date(each.date),
-				format: timeFormat(format),
-			};
-		});
+		const inputIndex = index;
 		const xScale = financeDiscontinuousScale(
 			inputIndex,
 		);

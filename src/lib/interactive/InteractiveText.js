@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -11,7 +11,7 @@ import {
 	saveNodeType,
 	isHoverForInteractiveType,
 } from "./utils";
-import EachText from "./hoc/EachText";
+import EachText from "./wrapper/EachText";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";

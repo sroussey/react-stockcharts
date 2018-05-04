@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+// import ReactDOM from "react-dom";
 
 import { isDefined } from "../utils";
 
@@ -30,10 +30,10 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 
 				const devicePixelRatio = window.devicePixelRatio || 1;
 				const backingStoreRatio = context.webkitBackingStorePixelRatio ||
-								context.mozBackingStorePixelRatio ||
-								context.msBackingStorePixelRatio ||
-								context.oBackingStorePixelRatio ||
-								context.backingStorePixelRatio || 1;
+					context.mozBackingStorePixelRatio ||
+					context.msBackingStorePixelRatio ||
+					context.oBackingStorePixelRatio ||
+					context.backingStorePixelRatio || 1;
 
 				const ratio = devicePixelRatio / backingStoreRatio;
 				// console.log("ratio = ", ratio);
@@ -43,12 +43,9 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
-			const el = this.node;
-			const w = el.parentNode.clientWidth;
-
+			this.handleWindowResize();
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
-				width: Math.max(w, minWidth),
 				ratio: this.getRatio(),
 			});
 			/* eslint-enable react/no-did-mount-set-state */
@@ -57,14 +54,18 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 			window.removeEventListener("resize", this.handleWindowResize);
 		}
 		handleWindowResize() {
-			const el = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
-			const w = el.parentNode.clientWidth;
+			this.setState({
+				width: 0
+			}, () => {
+				const el = this.node;
+				const { width, paddingLeft, paddingRight } = window.getComputedStyle(el.parentNode);
 
-			if (w > minWidth) {
+				const w = parseFloat(width) - (parseFloat(paddingLeft) + parseFloat(paddingRight));
+
 				this.setState({
-					width: w
+					width: Math.round(Math.max(w, minWidth))
 				});
-			}
+			});
 		}
 		getWrappedInstance() {
 			return this.node;

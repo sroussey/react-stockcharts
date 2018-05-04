@@ -1,4 +1,4 @@
-"use strict";
+
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -16,21 +16,24 @@ class DrawingObjectSelector extends Component {
 		this.getInteraction = this.getInteraction.bind(this);
 	}
 	handleDoubleClick(moreProps, e) {
-		console.log("Double Click");
-
 		e.preventDefault();
 		const { onDoubleClick } = this.props;
 		const { enabled } = this.props;
 		if (!enabled) return;
 
 		const interactives = this.getInteraction(moreProps);
-		const selected = getSelected(interactives);
+		const allSelected = getSelected(interactives);
 
 		// console.log(selected, interactives)
-		if (selected.length > 0) {
-			const item = head(selected);
+		if (allSelected.length > 0) {
+			const selected = head(allSelected);
+			const item = {
+				type: selected.type,
+				chartId: selected.chartId,
+				object: head(selected.objects)
+			};
 			const morePropsForChart = getMorePropsForChart(
-				moreProps, item.chartId
+				moreProps, selected.chartId
 			);
 			onDoubleClick(item, morePropsForChart);
 		}

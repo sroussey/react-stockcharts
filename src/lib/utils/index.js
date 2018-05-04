@@ -1,4 +1,4 @@
-"use strict";
+
 
 
 import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
@@ -51,6 +51,19 @@ export function path(loc = []) {
 
 export function functor(v) {
 	return typeof v === "function" ? v : () => v;
+}
+
+export function createVerticalLinearGradient(stops) {
+	return function(moreProps, ctx) {
+		const { chartConfig: { height } } = moreProps;
+
+		const grd = ctx.createLinearGradient(0, height, 0, 0);
+		stops.forEach(each => {
+			grd.addColorStop(each.stop, each.color);
+		});
+
+		return grd;
+	};
 }
 
 export function getClosestItemIndexes2(array, value, accessor) {
@@ -260,7 +273,7 @@ export function hexToRGBA(inputHex, opacity) {
 	return inputHex;
 }
 
-export function toObject(array, iteratee) {
+export function toObject(array, iteratee = identity) {
 	return array.reduce((returnObj, a) => {
 		const [key, value] = iteratee(a);
 		return {

@@ -58,7 +58,7 @@ class StraightLine extends Component {
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, strokeOpacity } = this.props;
+		const { stroke, strokeWidth, strokeOpacity, strokeDasharray } = this.props;
 
 		const lineWidth = strokeWidth;
 
@@ -67,6 +67,7 @@ class StraightLine extends Component {
 			<line
 				x1={x1} y1={y1} x2={x2} y2={y2}
 				stroke={stroke} strokeWidth={lineWidth}
+				strokeDasharray={getStrokeDasharray(strokeDasharray)}
 				strokeOpacity={strokeOpacity} />
 		);
 	}
@@ -195,18 +196,18 @@ export function generateLine({
 	const b /* y intercept */ = getYIntercept(m, start);
 
 	switch (type) {
-	case "XLINE":
-		return getXLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "RAY":
-		return getRayCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "LINE":
-		return getLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
+		case "XLINE":
+			return getXLineCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
+		case "RAY":
+			return getRayCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
+		case "LINE":
+			return getLineCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
 	}
 }
 

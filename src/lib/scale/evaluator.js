@@ -1,4 +1,4 @@
-"use strict";
+
 
 import {
 	head,
@@ -22,7 +22,7 @@ function getNewEnd(fallbackEnd, xAccessor, initialXScale, start) {
 	return newEnd;
 }
 
-function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold) {
+function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold, flipXScale) {
 	function filterData(
 		data, inputDomain, xAccessor, initialXScale,
 		{ currentPlotData, currentDomain, fallbackStart, fallbackEnd } = {}
@@ -48,17 +48,26 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 			filteredData = getFilteredResponse(data, left, right, xAccessor);
 		}
 
-		if (clamp === "left" || clamp === "both" || clamp === true) {
-			clampedDomain = [
-				Math.max(left, xAccessor(head(data))),
-				clampedDomain[1]
-			];
+		if (typeof clamp === "function") {
+			clampedDomain = clamp(clampedDomain, [xAccessor(head(data)), xAccessor(last(data))]);
+		} else {
+			if (clamp === "left" || clamp === "both" || clamp === true) {
+				clampedDomain = [
+					Math.max(left, xAccessor(head(data))),
+					clampedDomain[1]
+				];
+			}
+
+			if (clamp === "right" || clamp === "both" || clamp === true) {
+				clampedDomain = [
+					clampedDomain[0],
+					Math.min(right, xAccessor(last(data)))
+				];
+			}
 		}
-		if (clamp === "right" || clamp === "both" || clamp === true) {
-			clampedDomain = [
-				clampedDomain[0],
-				Math.min(right, xAccessor(last(data)))
-			];
+
+		if (clampedDomain !== inputDomain) {
+			filteredData = getFilteredResponse(data, clampedDomain[0], clampedDomain[1], xAccessor);
 		}
 
 		const realInputDomain = clampedDomain;
@@ -66,8 +75,13 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 
 		const xScale = initialXScale.copy().domain(realInputDomain);
 
-		const width = Math.floor(xScale(xAccessor(last(filteredData)))
+		let width = Math.floor(xScale(xAccessor(last(filteredData)))
 			- xScale(xAccessor(head(filteredData))));
+
+		// prevent negative width when flipXScale
+		if (flipXScale && width < 0) {
+			width = width * -1;
+		}
 
 		let plotData, domain;
 
@@ -142,11 +156,13 @@ function getFilteredResponse(data, left, right, xAccessor) {
 export default function({
 	xScale, useWholeData, clamp,
 	pointsPerPxThreshold, minPointsPerPxThreshold,
+	flipXScale
 }) {
 	return extentsWrapper(
 		useWholeData || isNotDefined(xScale.invert),
 		clamp,
 		pointsPerPxThreshold,
-		minPointsPerPxThreshold
+		minPointsPerPxThreshold,
+		flipXScale
 	);
 }
