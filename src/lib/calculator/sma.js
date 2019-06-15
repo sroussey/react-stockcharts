@@ -1,35 +1,34 @@
+import { mean } from 'd3-array';
 
+import { slidingWindow } from '../utils';
+import { SMA as defaultOptions } from './defaultOptionsForComputation';
 
-import { mean } from "d3-array";
+const smaAlgo = () => {
+  let options = defaultOptions;
 
-import { slidingWindow } from "../utils";
-import { SMA as defaultOptions } from "./defaultOptionsForComputation";
+  function calculator(data) {
+    const { windowSize, sourcePath } = options;
 
-export default function() {
+    const average = slidingWindow()
+      .windowSize(windowSize)
+      .sourcePath(sourcePath)
+      .accumulator((values) => mean(values));
 
-	let options = defaultOptions;
+    return average(data);
+  }
+  calculator.undefinedLength = function() {
+    const { windowSize } = options;
+    return windowSize - 1;
+  };
+  calculator.options = function(x) {
+    if (!arguments.length) {
+      return options;
+    }
+    options = { ...defaultOptions, ...x };
+    return calculator;
+  };
 
-	function calculator(data) {
-		const { windowSize, sourcePath } = options;
+  return calculator;
+};
 
-		const average = slidingWindow()
-			.windowSize(windowSize)
-			.sourcePath(sourcePath)
-			.accumulator(values => mean(values));
-
-		return average(data);
-	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
-		return windowSize - 1;
-	};
-	calculator.options = function(x) {
-		if (!arguments.length) {
-			return options;
-		}
-		options = { ...defaultOptions, ...x };
-		return calculator;
-	};
-
-	return calculator;
-}
+export { smaAlgo };

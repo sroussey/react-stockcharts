@@ -1,121 +1,144 @@
-
-
-export const BollingerBand = {
-	windowSize: 20,
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
-	multiplier: 2,
-	movingAverageType: "sma"
+const BollingerBand = {
+  windowSize: 20,
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
+  multiplier: 2,
+  movingAverageType: 'sma',
 };
 
-export const ATR = {
-	windowSize: 14,
+const ATR = {
+  windowSize: 14,
 };
 
-export const ForceIndex = {
-	sourcePath: "close", // "high", "low", "open", "close"
-	volumePath: "volume",
-};
-export const SmoothedForceIndex = {
-	sourcePath: "close", // "high", "low", "open", "close"
-	volumePath: "volume",
-	smoothingType: "ema",
-	smoothingWindow: 13,
-};
-export const Change = {
-	sourcePath: "close", // "high", "low", "open", "close"
-};
-export const Compare = {
-	basePath: "close",
-	mainKeys: ["open", "high", "low", "close"],
-	compareKeys: [],
+const ForceIndex = {
+  sourcePath: 'close', // "high", "low", "open", "close"
+  volumePath: 'volume',
 };
 
-export const ElderRay = {
-	windowSize: 13,
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close", // "high", "low", "open", "close"
-	movingAverageType: "sma",
+const SmoothedForceIndex = {
+  sourcePath: 'close', // "high", "low", "open", "close"
+  volumePath: 'volume',
+  smoothingType: 'ema',
+  smoothingWindow: 13,
 };
 
-export const ElderImpulse = {
-	sourcePath: "close", // "high", "low", "open", "close"
+const Change = {
+  sourcePath: 'close', // "high", "low", "open", "close"
 };
 
-export const SAR = {
-	accelerationFactor: 0.02,
-	maxAccelerationFactor: 0.2,
+const Compare = {
+  basePath: 'close',
+  mainKeys: ['open', 'high', 'low', 'close'],
+  compareKeys: [],
 };
 
-export const MACD = {
-	fast: 12,
-	slow: 26,
-	signal: 9,
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
+const ElderRay = {
+  windowSize: 13,
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close', // "high", "low", "open", "close"
+  movingAverageType: 'sma',
 };
 
-export const FullStochasticOscillator = {
-	windowSize: 12,
-	kWindowSize: 3,
-	dWindowSize: 3,
+const ElderImpulse = {
+  sourcePath: 'close', // "high", "low", "open", "close"
 };
 
-export const RSI = {
-	windowSize: 14,
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close", // "high", "low", "open", "close"
+const SAR = {
+  accelerationFactor: 0.02,
+  maxAccelerationFactor: 0.2,
 };
 
-export const EMA = {
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
-	windowSize: 10,
+const MACD = {
+  fast: 12,
+  slow: 26,
+  signal: 9,
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
 };
 
-export const SMA = {
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
-	windowSize: 10,
+const FullStochasticOscillator = {
+  windowSize: 12,
+  kWindowSize: 3,
+  dWindowSize: 3,
 };
 
-export const WMA = {
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
-	windowSize: 10,
+const RSI = {
+  windowSize: 14,
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close', // "high", "low", "open", "close"
 };
 
-export const TMA = {
-	// source: d => d.close, // "high", "low", "open", "close"
-	sourcePath: "close",
-	windowSize: 10,
+const EMA = {
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
+  windowSize: 10,
 };
 
-export const Kagi = {
-	reversalType: "ATR", // "ATR", "FIXED"
-	windowSize: 14,
-	reversal: 2,
-	sourcePath: "close", // "high", "low", "open", "close"
-	/* dateAccessor: d => d.date,
+const SMA = {
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
+  windowSize: 10,
+};
+
+const WMA = {
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
+  windowSize: 10,
+};
+
+const TMA = {
+  // source: d => d.close, // "high", "low", "open", "close"
+  sourcePath: 'close',
+  windowSize: 10,
+};
+
+const Kagi = {
+  reversalType: 'ATR', // "ATR", "FIXED"
+  windowSize: 14,
+  reversal: 2,
+  sourcePath: 'close', // "high", "low", "open", "close"
+  /* dateAccessor: d => d.date,
 	dateMutator: (d, date) => { d.date = date; }, */
 };
 
-export const Renko = {
-	reversalType: "ATR", // "ATR", "FIXED"
-	windowSize: 14,
-	fixedBrickSize: 2,
-	sourcePath: "high/low", // "close", "high/low"
-	/* source: d => ({ high: d.high, low: d.low }),
+const Renko = {
+  reversalType: 'ATR', // "ATR", "FIXED"
+  windowSize: 14,
+  fixedBrickSize: 2,
+  sourcePath: 'high/low', // "close", "high/low"
+  /* source: d => ({ high: d.high, low: d.low }),
 	dateAccessor: d => d.date,
 	dateMutator: (d, date) => { d.date = date; }, */
 };
 
-export const PointAndFigure = {
-	boxSize: 0.5,
-	reversal: 3,
-	sourcePath: "high/low", // "close", "high/low"
+const PointAndFigure = {
+  boxSize: 0.5,
+  reversal: 3,
+  sourcePath: 'high/low', // "close", "high/low"
 
-	/* source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
+  /* source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
 	dateAccessor: d => d.date,
 	dateMutator: (d, date) => { d.date = date; }, */
+};
+
+export {
+  ATR,
+  BollingerBand,
+  Change,
+  Compare,
+  EMA,
+  ElderImpulse,
+  ElderRay,
+  ForceIndex,
+  FullStochasticOscillator,
+  Kagi,
+  MACD,
+  PointAndFigure,
+  RSI,
+  Renko,
+  SAR,
+  SMA,
+  SmoothedForceIndex,
+  TMA,
+  WMA,
 };

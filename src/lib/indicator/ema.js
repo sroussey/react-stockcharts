@@ -1,35 +1,39 @@
+import { rebind, merge } from '../utils';
 
+import { emaAlgo as algo } from '../calculator';
+import { baseIndicator } from './baseIndicator';
 
-import { rebind, merge } from "../utils";
+const ALGORITHM_TYPE = 'EMA';
 
-import { ema } from "../calculator";
-import baseIndicator from "./baseIndicator";
+const ema = () => {
+  const base = baseIndicator()
+    .type(ALGORITHM_TYPE)
+    .accessor((d) => d.ema);
 
-const ALGORITHM_TYPE = "EMA";
+  const underlyingAlgorithm = algo();
 
-export default function() {
+  const mergedAlgorithm = merge()
+    .algorithm(underlyingAlgorithm)
+    .merge((datum, indicator) => {
+      datum.ema = indicator;
+    });
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.ema);
+  const indicator = function(data, options = { merge: true }) {
+    if (options.merge) {
+      if (!base.accessor())
+        throw new Error(
+          `Set an accessor to ${ALGORITHM_TYPE} before calculating`
+        );
+      return mergedAlgorithm(data);
+    }
+    return underlyingAlgorithm(data);
+  };
 
-	const underlyingAlgorithm = ema();
+  rebind(indicator, base, 'id', 'accessor', 'stroke', 'fill', 'echo', 'type');
+  rebind(indicator, underlyingAlgorithm, 'options', 'undefinedLength');
+  rebind(indicator, mergedAlgorithm, 'merge', 'skipUndefined');
 
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.ema = indicator; });
+  return indicator;
+};
 
-	const indicator = function(data, options = { merge: true }) {
-		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-			return mergedAlgorithm(data);
-		}
-		return underlyingAlgorithm(data);
-	};
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options", "undefinedLength");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
-
-	return indicator;
-}
+export { ema };

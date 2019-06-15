@@ -1,35 +1,39 @@
+import React from 'react';
 
+import { TypeChooser } from 'react-stockcharts/lib/helper';
 
-import React from "react";
-import { TypeChooser } from "react-stockcharts/lib/helper";
+import { ContentSection } from 'lib/ContentSection';
+import { Row } from 'lib/Row';
+import { Section } from 'lib/Section';
 
-import ContentSection from "lib/content-section";
-import Row from "lib/row";
-import Section from "lib/section";
-
-import GroupedBarChart from "lib/charts/GroupedBarChart";
+import { GroupedBarChart } from 'lib/charts/GroupedBarChart';
 
 class GroupedBarChartPage extends React.Component {
-	render() {
-		return (
-			<ContentSection title={GroupedBarChartPage.title}>
-				<Row>
-					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<GroupedBarChart data={this.props.groupedBarData} type={type} />)}
-						</TypeChooser>
-					</Section>
-				</Row>
-				<Row>
-					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{ __html: require("md/GROUPED-BAR-CHART") }}></aside>
-					</Section>
-				</Row>
-			</ContentSection>
-		);
-	}
+  render() {
+    return (
+      <ContentSection title={GroupedBarChartPage.title}>
+        <Row>
+          <Section colSpan={2}>
+            <TypeChooser ref='container'>
+              {(type) => (
+                <GroupedBarChart data={this.props.groupedBarData} type={type} />
+              )}
+            </TypeChooser>
+          </Section>
+        </Row>
+        <Row>
+          <Section colSpan={2}>
+            <aside
+              dangerouslySetInnerHTML={{
+                __html: require('md/GROUPED-BAR-CHART'),
+              }}></aside>
+          </Section>
+        </Row>
+      </ContentSection>
+    );
+  }
 }
 
-GroupedBarChartPage.title = "Grouped Bar Chart";
+GroupedBarChartPage.title = 'Grouped Bar Chart';
 
-export default GroupedBarChartPage;
+export { GroupedBarChartPage };

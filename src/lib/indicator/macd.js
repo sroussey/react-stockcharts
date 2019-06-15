@@ -1,39 +1,43 @@
+import { rebind, merge } from '../utils';
 
+import { macdAlgo as algo } from '../calculator';
 
-import { rebind, merge } from "../utils";
+import { baseIndicator } from './baseIndicator';
+import { MACD as appearanceOptions } from './defaultOptionsForAppearance';
 
-import { macd } from "../calculator";
+const ALGORITHM_TYPE = 'MACD';
 
-import baseIndicator from "./baseIndicator";
-import { MACD as appearanceOptions } from "./defaultOptionsForAppearance";
+const macd = () => {
+  const base = baseIndicator()
+    .type(ALGORITHM_TYPE)
+    .fill(appearanceOptions.fill)
+    .stroke(appearanceOptions.stroke)
+    .accessor((d) => d.macd);
 
-const ALGORITHM_TYPE = "MACD";
+  const underlyingAlgorithm = algo();
 
-export default function() {
+  const mergedAlgorithm = merge()
+    .algorithm(underlyingAlgorithm)
+    .merge((datum, indicator) => {
+      datum.macd = indicator;
+    });
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.fill(appearanceOptions.fill)
-		.stroke(appearanceOptions.stroke)
-		.accessor(d => d.macd);
+  const indicator = function(data, options = { merge: true }) {
+    if (options.merge) {
+      if (!base.accessor())
+        throw new Error(
+          `Set an accessor to ${ALGORITHM_TYPE} before calculating`
+        );
+      return mergedAlgorithm(data);
+    }
+    return underlyingAlgorithm(data);
+  };
 
-	const underlyingAlgorithm = macd();
+  rebind(indicator, base, 'id', 'accessor', 'stroke', 'fill', 'echo', 'type');
+  rebind(indicator, underlyingAlgorithm, 'options', 'undefinedLength');
+  rebind(indicator, mergedAlgorithm, 'merge', 'skipUndefined');
 
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.macd = indicator; });
+  return indicator;
+};
 
-	const indicator = function(data, options = { merge: true }) {
-		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-			return mergedAlgorithm(data);
-		}
-		return underlyingAlgorithm(data);
-	};
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options", "undefinedLength");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
-
-	return indicator;
-}
+export { macd };
