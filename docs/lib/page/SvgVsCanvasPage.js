@@ -5,7 +5,7 @@ import { ContentSection } from 'lib/ContentSection';
 import { Row } from 'lib/Row';
 import { Section } from 'lib/Section';
 
-import { CandleStickChartWithZoomPan } from 'lib/charts/CandleStickChartWithZoomPan';
+import { CandleStickChart } from 'lib/charts/CandleStickChartWithZoomPan';
 
 class SvgVsCanvasPage extends React.Component {
   render() {
@@ -23,10 +23,7 @@ class SvgVsCanvasPage extends React.Component {
           <Section colSpan={2}>
             <TypeChooser type='svg'>
               {(type) => (
-                <CandleStickChartWithZoomPan
-                  data={this.props.someData}
-                  type={type}
-                />
+                <CandleStickChart data={this.props.someData} type={type} />
               )}
             </TypeChooser>
           </Section>

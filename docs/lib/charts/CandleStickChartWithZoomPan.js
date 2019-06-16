@@ -168,6 +168,6 @@ CandleStickChartWithZoomPan.defaultProps = {
   clamp: false,
 };
 
-CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
+const CandleStickChart = fitWidth(CandleStickChartWithZoomPan);
 
-export { CandleStickChartWithZoomPan };
+export { CandleStickChart };

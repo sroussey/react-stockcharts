@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { PureComponent } from './utils/PureComponent';
 
 import { hexToRGBA, isDefined } from './utils';

@@ -54,6 +54,8 @@ function isArraySize2AndNumber(yExtentsProp) {
 
 function getNewChartConfig(innerDimension, children, existingChartConfig = []) {
   return React.Children.map(children, (each) => {
+    // eslint-disable-next-line no-console
+    console.log('children', each);
     if (each && each.type.toString() === Chart.toString()) {
       const chartProps = {
         ...Chart.defaultProps,

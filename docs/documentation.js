@@ -382,7 +382,8 @@ function renderPartialPage(
   // Kagi
   // PointAndFigure
   // Renko
-  var Chart = require('./lib/charts/CandleStickChartWithZoomPan').default;
+  var CandleStickChart = require('./lib/charts/CandleStickChartWithZoomPan')
+    .default;
   // data, dataFull, compareData
   class ExamplesPage extends React.Component {
     render() {
@@ -397,7 +398,7 @@ function renderPartialPage(
               left: 0,
               right: 0,
             }}>
-            {(type) => <Chart data={dataFull} type={type} />}
+            {(type) => <CandleStickChart data={dataFull} type={type} />}
           </TypeChooser>
         </div>
       );

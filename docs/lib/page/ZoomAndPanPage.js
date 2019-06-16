@@ -5,7 +5,7 @@ import { ContentSection } from 'lib/ContentSection';
 import { Row } from 'lib/Row';
 import { Section } from 'lib/Section';
 
-import { CandleStickChartWithZoomPan } from 'lib/charts/CandleStickChartWithZoomPan';
+import { CandleStickChart } from 'lib/charts/CandleStickChartWithZoomPan';
 import {
   mouseBasedZoomAnchor,
   lastVisibleItemBasedZoomAnchor,
@@ -67,7 +67,7 @@ class ZoomAndPanPage extends React.Component {
           <Section colSpan={2}>
             <TypeChooser>
               {(type) => (
-                <CandleStickChartWithZoomPan
+                <CandleStickChart
                   ref={this.saveNode}
                   data={this.props.lotsOfData}
                   mouseMoveEvent={mouseMoveEvent}
