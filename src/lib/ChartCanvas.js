@@ -976,6 +976,7 @@ class ChartCanvas extends Component {
 			}
 			// do reset
 			newState = resetChart(nextProps);
+			this.mutableState = {};
 		} else {
 
 			const [start, end] = this.state.xScale.domain();

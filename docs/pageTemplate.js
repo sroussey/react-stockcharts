@@ -9,8 +9,8 @@ function getExternalAssets(mode) {
 		<link href="prismjs/themes/prism.css" rel="stylesheet">`;
 	}
 	default:
-		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/umd/react-dom.production.min.js"></script>
+		return `<script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/umd/react-dom.production.min.js"></script>
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">
@@ -54,7 +54,6 @@ function getIndexContent() {
 			<div class="row">
 				<div class="col-md-12">
 					<a class="btn btn-primary" href="documentation.html" role="button">Documentation</a>
-					<a class="btn btn-primary" href="https://demo.reactstockcharts.org" role="button">Demo v2</a>
 					<h3>Click on the chart, zoom with scroll, pan with drag</h3>
 					<div id="chart" class="react-stockchart"></div>
 				</div>

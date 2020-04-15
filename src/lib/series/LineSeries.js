@@ -147,8 +147,8 @@ class LineSeries extends Component {
 		);
 	}
 	render() {
-		const { highlightOnHover } = this.props;
-		const hoverProps = highlightOnHover
+		const { highlightOnHover, onHover, onUnHover } = this.props;
+		const hoverProps = (highlightOnHover || onHover || onUnHover)
 			? {
 				isHover: this.isHover,
 				drawOn: ["mousemove", "pan"],
@@ -167,6 +167,8 @@ class LineSeries extends Component {
 			onClickWhenHover={this.props.onClick}
 			onDoubleClickWhenHover={this.props.onDoubleClick}
 			onContextMenuWhenHover={this.props.onContextMenu}
+			onHover={this.props.onHover}
+			onUnHover={this.props.onUnHover}
 			{...hoverProps}
 		/>;
 	}
@@ -200,6 +202,8 @@ LineSeries.propTypes = {
 	highlightOnHover: PropTypes.bool,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onHover: PropTypes.func,
+	onUnHover: PropTypes.func,
 	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
 	connectNulls: PropTypes.bool,
