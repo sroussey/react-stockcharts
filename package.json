@@ -1,5 +1,5 @@
 {
-  "name": "react-stockcharts",
+  "name": "react-stockcharts-akahan",
   "version": "0.7.8",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
@@ -7,7 +7,7 @@
   "author": {
     "name": "Ragu Ramaswamy"
   },
-  "homepage": "http://rrag.github.io/react-stockcharts/",
+  "homepage": "https://github.com/akahan/react-stockcharts",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf -rf ./build",
@@ -137,10 +137,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rrag/react-stockcharts.git"
+    "url": "https://github.com/akahan/react-stockcharts.git"
   },
   "bugs": {
-    "url": "https://github.com/rrag/react-stockcharts/issues"
+    "url": "https://github.com/akahan/react-stockcharts/issues"
   },
   "maintainers": [
     {
