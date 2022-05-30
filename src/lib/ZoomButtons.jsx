@@ -7,14 +7,14 @@ import { interpolateNumber } from 'd3-interpolate';
 
 import { last, noop } from './utils';
 
-class ZoomButtons extends Component {
+export class ZoomButtons extends Component {
   constructor(props) {
     super(props);
     this.handleZoomOut = this.handleZoomOut.bind(this);
     this.handleZoomIn = this.handleZoomIn.bind(this);
     this.zoom = this.zoom.bind(this);
   }
-  zoom(direction) {
+  zoom(direction, e) {
     const { xAxisZoom, xScale, plotData, xAccessor } = this.context;
     const cx = xScale(xAccessor(last(plotData)));
     // mean(xScale.range());
@@ -36,20 +36,20 @@ class ZoomButtons extends Component {
     });
 
     this.interval = setInterval(() => {
-      xAxisZoom(foo.shift());
+      xAxisZoom(foo.shift(), e);
       if (foo.length === 0) {
         clearInterval(this.interval);
         delete this.interval;
       }
     }, 10);
   }
-  handleZoomOut() {
+  handleZoomOut(e) {
     if (this.interval) return;
-    this.zoom(1);
+    this.zoom(1, e);
   }
-  handleZoomIn() {
+  handleZoomIn(e) {
     if (this.interval) return;
-    this.zoom(-1);
+    this.zoom(-1, e);
   }
   render() {
     const { chartConfig } = this.context;
@@ -68,7 +68,7 @@ class ZoomButtons extends Component {
     const y = height - heightFromBase;
 
     const [w, h] = size;
-    const hLength = 5;
+    const hLength = 6;
     const wLength = 6;
 
     const textY = Math.round(y + h / 2);
@@ -124,7 +124,7 @@ class ZoomButtons extends Component {
           strokeOpacity={strokeOpacity}
           strokeWidth={strokeWidth}
         />
-        <g transform={`translate (${resetX}, ${y + h / 4}) scale(.14)`}>
+        <g transform={`translate (${resetX}, ${y + h / 4}) scale(.18)`}>
           <path
             d='M31 13C23.4 5.3 12.8.5 1.1.5c-23.3 0-42.3 19-42.3 42.5s18.9 42.5 42.3 42.5c13.8 0 26-6.6 33.7-16.9l-16.5-1.8C13.5 70.4 7.5 72.5 1 72.5c-16.2 0-29.3-13.2-29.3-29.4S-15.2 13.7 1 13.7c8.1 0 15.4 3.3 20.7 8.6l-10.9 11h32.5V.5L31 13z'
             fill={textFill}
@@ -229,5 +229,3 @@ ZoomButtons.contextTypes = {
   xAccessor: PropTypes.func.isRequired,
   xAxisZoom: PropTypes.func.isRequired,
 };
-
-export { ZoomButtons };

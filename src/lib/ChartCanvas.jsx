@@ -46,6 +46,7 @@ const CANDIDATES_FOR_RESET = [
 function shouldResetChart(thisProps, nextProps) {
   return !CANDIDATES_FOR_RESET.every((key) => {
     const result = shallowEqual(thisProps[key], nextProps[key]);
+    // console.log(key, result);
     return result;
   });
 }
@@ -191,6 +192,7 @@ function updateChart(
 
   const updatedXScale = setXRange(xScale, dimensions, padding, direction);
 
+  // console.log("lastItemWasVisible =", lastItemWasVisible, end, xAccessor(lastItem), end >= xAccessor(lastItem));
   let initialPlotData;
   if (!lastItemWasVisible || end >= xAccessor(lastItem)) {
     // resize comes here...
@@ -204,6 +206,7 @@ function updateChart(
       : start;
 
     const lastItemX = initialXScale(xAccessor(lastItem));
+    // console.log("pointsPerPixel => ", newStart, start, end, updatedXScale(end));
     const response = filterData(
       fullData,
       [newStart, end],
@@ -213,6 +216,7 @@ function updateChart(
     );
     initialPlotData = response.plotData;
     updatedXScale.domain(response.domain);
+    // console.log("HERE!!!!!", start, end);
   } else if (lastItemWasVisible && end < xAccessor(lastItem)) {
     // this is when a new item is added and last item was visible
     // so slide over and show the new item also
@@ -431,6 +435,7 @@ class ChartCanvas extends Component {
     if (canvases && canvases.axes) {
       clearCanvas(
         [
+          canvases.front,
           canvases.axes,
           // canvases.hover,
           canvases.mouseCoord,
@@ -444,6 +449,7 @@ class ChartCanvas extends Component {
     if (canvases && canvases.mouseCoord) {
       clearCanvas(
         [
+          // canvases.front,
           canvases.mouseCoord,
           // canvases.hover,
         ],
@@ -456,6 +462,7 @@ class ChartCanvas extends Component {
     if (canvases && canvases.axes) {
       clearCanvas(
         [
+          canvases.front,
           canvases.axes,
           // canvases.hover,
           canvases.mouseCoord,
@@ -668,7 +675,7 @@ class ChartCanvas extends Component {
   }
   handleZoom(zoomDirection, mouseXY, e) {
     if (this.panInProgress) return;
-
+    // console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
     const {
       xAccessor,
       xScale: initialXScale,
@@ -739,7 +746,7 @@ class ChartCanvas extends Component {
       }
     );
   }
-  xAxisZoom(newDomain) {
+  xAxisZoom(newDomain, e) {
     const { xScale, plotData, chartConfig } = this.calculateStateForDomain(
       newDomain
     );
@@ -751,6 +758,20 @@ class ChartCanvas extends Component {
     const start = head(xScale.domain());
     const end = xAccessor(firstItem);
     const { onLoadMore } = this.props;
+
+    this.triggerEvent(
+      'zoom',
+      {
+        xScale,
+        plotData,
+        chartConfig,
+        // mouseXY,
+        // currentCharts,
+        // currentItem,
+        show: true,
+      },
+      e
+    );
 
     this.setState(
       {
@@ -784,6 +805,8 @@ class ChartCanvas extends Component {
     });
   }
   triggerEvent(type, props, e) {
+    // console.log("triggering ->", type);
+
     this.subscriptions.forEach((each) => {
       const state = {
         ...this.state,
@@ -812,6 +835,7 @@ class ChartCanvas extends Component {
     const { fullData } = this;
     const { postCalculator } = this.props;
 
+    // console.log(dx, dy);
     if (isNotDefined(initialXScale.invert))
       throw new Error(
         'xScale provided does not have an invert() method.' +
@@ -836,6 +860,7 @@ class ChartCanvas extends Component {
 
     const updatedScale = initialXScale.copy().domain(domain);
     const plotData = postCalculator(beforePlotData);
+    // console.log(last(plotData));
 
     const currentItem = getCurrentItem(
       updatedScale,
@@ -852,6 +877,7 @@ class ChartCanvas extends Component {
     );
     const currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
+    // console.log(initialXScale.domain(), newDomain, updatedScale.domain());
     return {
       xScale: updatedScale,
       plotData,
@@ -882,6 +908,7 @@ class ChartCanvas extends Component {
       this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
       this.panInProgress = true;
+      // console.log(panStartXScale.domain(), state.xScale.domain());
 
       this.triggerEvent('pan', state, e);
 
@@ -904,12 +931,13 @@ class ChartCanvas extends Component {
       dxdy,
       chartsToPan
     );
-
+    // console.log(this.canvasDrawCallbackList.map(d => d.type));
     this.hackyWayToStopPanBeyondBounds__plotData = null;
     this.hackyWayToStopPanBeyondBounds__domain = null;
 
     this.panInProgress = false;
 
+    // console.log("PANEND", panEnd++);
     const { xScale, plotData, chartConfig } = state;
 
     this.triggerEvent('panend', state, e);
@@ -921,6 +949,7 @@ class ChartCanvas extends Component {
       const firstItem = head(fullData);
       const start = head(xScale.domain());
       const end = xAccessor(firstItem);
+      // console.log(start, end, start < end ? "Load more" : "I have it");
 
       const { onLoadMore } = this.props;
 
@@ -1064,12 +1093,12 @@ class ChartCanvas extends Component {
       setCursorClass: this.setCursorClass,
     };
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { fullData, ...state } = resetChart(this.props, true);
     this.setState(state);
     this.fullData = fullData;
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const reset = shouldResetChart(this.props, nextProps);
 
     const interaction = isInteractionEnabled(
@@ -1135,12 +1164,29 @@ class ChartCanvas extends Component {
         log('Pan is in progress');
       }
     } else {
+      /*
+			if (!reset) {
+				state.chartConfig
+					.forEach((each) => {
+						// const sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
+						const prevChartConfig = find(initialChartConfig, d => d.id === each.id);
+						if (isDefined(prevChartConfig) && prevChartConfig.yPanEnabled) {
+							each.yScale.domain(prevChartConfig.yScale.domain());
+							each.yPanEnabled = prevChartConfig.yPanEnabled;
+						}
+					});
+			}
+			*/
       this.clearThreeCanvas();
       this.setState(state);
     }
     this.fullData = fullData;
   }
-
+  /*
+	componentDidUpdate(prevProps, prevState) {
+		console.error(this.state.chartConfig, this.state.chartConfig.map(d => d.yScale.domain()));
+	}
+	*/
   resetYDomain(chartId) {
     const { chartConfig } = this.state;
     let changed = false;
@@ -1167,6 +1213,7 @@ class ChartCanvas extends Component {
     }
   }
   shouldComponentUpdate() {
+    // console.log("Happneing.....", !this.panInProgress)
     return !this.panInProgress;
   }
   render() {
@@ -1204,6 +1251,7 @@ class ChartCanvas extends Component {
           width={width}
           height={height}
           zIndex={zIndex}
+          margin={margin}
         />
         <svg
           className={className}

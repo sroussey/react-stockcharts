@@ -3,7 +3,7 @@ import React from 'react';
 import { hexToRGBA, isDefined, getStrokeDasharray } from '../utils';
 
 /* eslint-disable react/prop-types */
-function renderSVG(props) {
+export function renderSVG(props) {
   const { className } = props;
 
   const edge = helper(props);
@@ -184,7 +184,7 @@ function helper(props) {
   };
 }
 
-function drawOnCanvas(ctx, props) {
+export function drawOnCanvas(ctx, props) {
   const { fontSize, fontFamily } = props;
 
   ctx.font = `${fontSize}px ${fontFamily}`;
@@ -253,7 +253,7 @@ function drawOnCanvas(ctx, props) {
     } else {
       // console.error(x, y, rectWidth, rectHeight)
       if (rectRadius) {
-        roundRect(ctx, x, y, rectWidth, rectHeight, 3);
+        roundRect(ctx, x, y, rectWidth, rectHeight, rectRadius);
       } else {
         ctx.rect(x, y, rectWidth, rectHeight);
       }
@@ -290,5 +290,3 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.quadraticCurveTo(x, y, x + radius, y);
   ctx.closePath();
 }
-
-export { drawOnCanvas, renderSVG };

@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { scaleLinear } from 'd3-scale';
 
-import { PureComponent } from './utils/PureComponent';
-import { isNotDefined, noop, find } from './utils';
+import { find, isNotDefined, noop, PureComponent } from './utils';
 
 class Chart extends PureComponent {
   constructor(props, context) {
@@ -11,7 +10,7 @@ class Chart extends PureComponent {
     this.yScale = this.yScale.bind(this);
     this.listener = this.listener.bind(this);
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { id } = this.props;
     const { subscribe } = this.context;
     subscribe('chart_' + id, {

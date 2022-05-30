@@ -16,7 +16,7 @@ const aliases = {
   dragcancel: 'drag',
 };
 
-class GenericComponent extends Component {
+export class GenericComponent extends Component {
   constructor(props, context) {
     super(props, context);
     this.drawOnCanvas = this.drawOnCanvas.bind(this);
@@ -255,7 +255,7 @@ class GenericComponent extends Component {
       }
     }
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { subscribe, chartId } = this.context;
     const { clip, edgeClip } = this.props;
 
@@ -308,7 +308,7 @@ class GenericComponent extends Component {
       this.drawOnCanvas();
     }
   }
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     const { xScale, plotData, chartConfig, getMutableState } = nextContext;
 
     this.props.debug(nextContext);
@@ -472,12 +472,18 @@ GenericComponent.contextTypes = {
   setCursorClass: PropTypes.func.isRequired,
 };
 
-function getAxisCanvas(contexts) {
+export function getAxisCanvas(contexts) {
   return contexts.axes;
 }
 
-function getMouseCanvas(contexts) {
+export function getMouseCanvas(contexts) {
   return contexts.mouseCoord;
 }
 
-export { GenericComponent, getAxisCanvas, getMouseCanvas };
+export function getBgCanvas(contexts) {
+  return contexts.bg;
+}
+
+export function getFrontCanvas(contexts) {
+  return contexts.front;
+}

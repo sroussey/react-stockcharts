@@ -21,10 +21,13 @@ class CanvasContainer extends Component {
     }
   }
   render() {
-    const { height, width, type, zIndex, ratio } = this.props;
+    const { height, width, type, zIndex, ratio, margin } = this.props;
     if (type === 'svg') return null;
 
     log('using ratio ', ratio);
+
+    const frontWidth = width - margin.right;
+    const frontHeight = height - margin.bottom;
 
     return (
       <div style={{ position: 'absolute', zIndex: zIndex }}>
@@ -61,6 +64,17 @@ class CanvasContainer extends Component {
             height: height,
           }}
         />
+        <canvas
+          id='front'
+          ref={this.setDrawCanvas}
+          width={frontWidth * ratio}
+          height={frontHeight * ratio}
+          style={{
+            position: 'absolute',
+            width: frontWidth,
+            height: frontHeight,
+          }}
+        />
       </div>
     );
   }
@@ -75,6 +89,7 @@ CanvasContainer.propTypes = {
   type: PropTypes.string.isRequired,
   zIndex: PropTypes.number,
   ratio: PropTypes.number.isRequired,
+  margin: PropTypes.object.isRequired,
 };
 
 export { CanvasContainer };

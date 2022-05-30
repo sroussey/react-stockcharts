@@ -7,7 +7,7 @@ import { getAxisCanvas } from '../GenericComponent';
 
 import { hexToRGBA, isDefined, first, functor } from '../utils';
 
-class AreaOnlySeries extends Component {
+export class AreaOnlySeries extends Component {
   constructor(props) {
     super(props);
     this.renderSVG = this.renderSVG.bind(this);
@@ -123,6 +123,5 @@ AreaOnlySeries.defaultProps = {
   opacity: 1,
   defined: (d) => !isNaN(d),
   base: (yScale /* , d, moreProps */) => first(yScale.range()),
+  lastX: ({ xScale, xAccessor, d }) => xScale(xAccessor(d)),
 };
-
-export { AreaOnlySeries };

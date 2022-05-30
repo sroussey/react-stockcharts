@@ -131,6 +131,7 @@ RSISeries.propTypes = {
   className: PropTypes.string,
   yAccessor: PropTypes.func.isRequired,
   stroke: PropTypes.shape({
+    line: PropTypes.oneOf(strokeDashTypes),
     top: PropTypes.string.isRequired,
     middle: PropTypes.string.isRequired,
     bottom: PropTypes.string.isRequired,
