@@ -1,36 +1,40 @@
+import { rebind, merge } from '../utils';
 
+import { compareAlgo as algo } from '../calculator';
 
-import { rebind, merge } from "../utils";
+import { baseIndicator } from './baseIndicator';
 
-import { compare } from "../calculator";
+const ALGORITHM_TYPE = 'Compare';
 
-import baseIndicator from "./baseIndicator";
+const compare = () => {
+  const base = baseIndicator()
+    .type(ALGORITHM_TYPE)
+    .accessor((d) => d.compare);
 
-const ALGORITHM_TYPE = "Compare";
+  const underlyingAlgorithm = algo();
 
-export default function() {
+  const mergedAlgorithm = merge()
+    .algorithm(underlyingAlgorithm)
+    .merge((datum, indicator) => {
+      datum.compare = indicator;
+    });
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.compare);
+  const indicator = function(data, options = { merge: true }) {
+    if (options.merge) {
+      if (!base.accessor())
+        throw new Error(
+          `Set an accessor to ${ALGORITHM_TYPE} before calculating`
+        );
+      return mergedAlgorithm(data);
+    }
+    return underlyingAlgorithm(data);
+  };
 
-	const underlyingAlgorithm = compare();
+  rebind(indicator, base, 'id', 'accessor', 'stroke', 'fill', 'echo', 'type');
+  rebind(indicator, underlyingAlgorithm, 'options');
+  rebind(indicator, mergedAlgorithm, 'merge');
 
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.compare = indicator; });
+  return indicator;
+};
 
-	const indicator = function(data, options = { merge: true }) {
-		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-			return mergedAlgorithm(data);
-		}
-		return underlyingAlgorithm(data);
-	};
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options");
-	rebind(indicator, mergedAlgorithm, "merge");
-
-	return indicator;
-}
+export { compare };

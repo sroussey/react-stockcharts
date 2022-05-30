@@ -1,24 +1,22 @@
+import { rebind } from '../utils';
 
+import { renkoAlgo as algo } from '../calculator';
+import { baseIndicator } from './baseIndicator';
 
-import { rebind } from "../utils";
+const ALGORITHM_TYPE = 'Renko';
 
-import { renko } from "../calculator";
-import baseIndicator from "./baseIndicator";
+const renko = () => {
+  const base = baseIndicator().type(ALGORITHM_TYPE);
 
-const ALGORITHM_TYPE = "Renko";
+  const underlyingAlgorithm = algo();
 
-export default function() {
+  const indicator = underlyingAlgorithm;
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE);
+  rebind(indicator, base, 'id', 'stroke', 'fill', 'echo', 'type');
+  rebind(indicator, underlyingAlgorithm, 'dateAccessor', 'dateMutator');
+  rebind(indicator, underlyingAlgorithm, 'options');
 
-	const underlyingAlgorithm = renko();
+  return indicator;
+};
 
-	const indicator = underlyingAlgorithm;
-
-	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
-	rebind(indicator, underlyingAlgorithm, "options");
-
-	return indicator;
-}
+export { renko };

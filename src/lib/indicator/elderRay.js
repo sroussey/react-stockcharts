@@ -1,35 +1,39 @@
+import { rebind, merge } from '../utils';
+import { elderRayAlgo as algo } from '../calculator';
 
+import { baseIndicator } from './baseIndicator';
 
-import { rebind, merge } from "../utils";
-import { elderRay } from "../calculator";
+const ALGORITHM_TYPE = 'ElderRay';
 
-import baseIndicator from "./baseIndicator";
+const elderRay = () => {
+  const base = baseIndicator()
+    .type(ALGORITHM_TYPE)
+    .accessor((d) => d.elderRay);
 
-const ALGORITHM_TYPE = "ElderRay";
+  const underlyingAlgorithm = algo();
 
-export default function() {
+  const mergedAlgorithm = merge()
+    .algorithm(underlyingAlgorithm)
+    .merge((datum, indicator) => {
+      datum.elderRay = indicator;
+    });
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.elderRay);
+  const indicator = function(data, options = { merge: true }) {
+    if (options.merge) {
+      if (!base.accessor())
+        throw new Error(
+          `Set an accessor to ${ALGORITHM_TYPE} before calculating`
+        );
+      return mergedAlgorithm(data);
+    }
+    return underlyingAlgorithm(data);
+  };
 
-	const underlyingAlgorithm = elderRay();
+  rebind(indicator, base, 'id', 'accessor', 'stroke', 'fill', 'echo', 'type');
+  rebind(indicator, underlyingAlgorithm, 'options');
+  rebind(indicator, mergedAlgorithm, 'merge', 'skipUndefined');
 
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.elderRay = indicator; });
+  return indicator;
+};
 
-	const indicator = function(data, options = { merge: true }) {
-		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-			return mergedAlgorithm(data);
-		}
-		return underlyingAlgorithm(data);
-	};
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
-
-	return indicator;
-}
+export { elderRay };
