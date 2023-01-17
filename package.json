@@ -1,13 +1,13 @@
 {
-  "name": "react-stockcharts-akahan",
-  "version": "0.7.8",
+  "name": "@sroussey/react-stockcharts",
+  "version": "0.8.3",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
   "author": {
     "name": "Ragu Ramaswamy"
   },
-  "homepage": "https://github.com/akahan/react-stockcharts",
+  "homepage": "https://github.com/sroussey/react-stockcharts",
   "license": "MIT",
   "scripts": {
     "clean": "rimraf -rf ./build",
@@ -34,7 +34,7 @@
     "server": "cd build && python3 -m http.server 8090"
   },
   "dependencies": {
-    "async": "^3.2.3",
+   "async": "^3.2.3",
     "d3-array": "^1.2.1",
     "d3-collection": "^1.0.4",
     "d3-force": "^1.1.0",
@@ -52,13 +52,13 @@
     "save-svg-as-png": "^1.4.5"
   },
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
@@ -71,7 +71,7 @@
     "es6-promise": "^4.1.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^5.0.0",
-    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-const-immutable": "^2.0.0",
     "eslint-plugin-flowtype": "^3.10.3",
     "eslint-plugin-import": "^2.17.3",

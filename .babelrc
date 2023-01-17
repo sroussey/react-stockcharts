@@ -8,7 +8,7 @@
 	],
 	"env": {
 		"cjs": {
-			"presets": [["env"]]
+			"presets": [["env",{ "modules": false  }]]
 		},
 		"es": {
 			"presets": [
