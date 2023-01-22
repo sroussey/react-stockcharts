@@ -1,6 +1,6 @@
 {
   "name": "@sroussey/react-stockcharts",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
@@ -52,8 +52,8 @@
     "save-svg-as-png": "^1.4.5"
   },
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
