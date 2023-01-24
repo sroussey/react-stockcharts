@@ -61,17 +61,21 @@ const fitWidth = (WrappedComponent, withRef = true, minWidth = 100) => {
         },
         () => {
           const el = this.node;
-          const { width, paddingLeft, paddingRight } = window.getComputedStyle(
-            el.parentNode
-          );
+          if (el) {
+            const {
+              width,
+              paddingLeft,
+              paddingRight,
+            } = window.getComputedStyle(el.parentNode);
 
-          const w =
-            parseFloat(width) -
-            (parseFloat(paddingLeft) + parseFloat(paddingRight));
+            const w =
+              parseFloat(width) -
+              (parseFloat(paddingLeft) + parseFloat(paddingRight));
 
-          this.setState({
-            width: Math.round(Math.max(w, minWidth)),
-          });
+            this.setState({
+              width: Math.round(Math.max(w, minWidth)),
+            });
+          }
         }
       );
     }
